@@ -1,20 +1,10 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
-// Vercel requires base: './' or no base at all
 export default defineConfig({
   plugins: [react()],
-
-  // FIX: remove GitHub Pages base
-  base: './',
-
-  server: {
-    port: 5173,
-    open: true
-  },
-
+  base: './',   // <-- FIXED, this solves blank screen and 404
   build: {
-    outDir: 'dist',
-    sourcemap: false
+    outDir: "dist"
   }
-})
+});
