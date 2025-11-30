@@ -1,0 +1,12 @@
+const API_URL = 'http://localhost:8000/chat';
+const requestBody = {
+  user_input: userInput,
+  session_id: SESSION_ID,
+};
+const data = await response.json(); 
+
+const agentResponse: AgentResponse = {
+  message: data.message,
+  designResultUrl: data.design_result_url,
+};
+if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
