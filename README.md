@@ -6,6 +6,7 @@ This project offers a modular architecture with a FastAPI backend and an extenda
 
 🚀 Quickstart (Developer)
 🔧 Backend — FastAPI
+🌐 Live Demo: [AI-Agent Live](https://your-vercel-url.vercel.app)
 
 Run the backend locally:
 
