@@ -1,22 +1,24 @@
-// vite.config.ts
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import path from 'path';
 
 export default defineConfig({
   plugins: [react()],
-  
-  // ✅ Use './' as base to fix blank page / 404 issues
   base: './',
-
-  // Optional build settings
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src')
+    }
+  },
   build: {
     outDir: 'dist',
     sourcemap: false
   },
-
-  // Optional server settings for local development
   server: {
     port: 5173,
     open: true
+  },
+  css: {
+    devSourcemap: true
   }
 });
