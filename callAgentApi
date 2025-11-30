@@ -1,18 +1,23 @@
+// 1. Define the URL (Use an environment variable for production!)
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/chat'; 
+
+// 2. Define the Body
+const requestBody = {
+  user_input: userInput,
+  session_id: SESSION_ID,
+};
+
+// 3. Make the fetch call
 const response = await fetch(API_URL, {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify(requestBody),
+  body: JSON.stringify(requestBody), // Now this will work because requestBody exists
 });
 
-// ✅ Check for HTTP errors first
+// 4. Check for errors
 if (!response.ok) {
   throw new Error(`HTTP error! Status: ${response.status}`);
 }
 
-// ✅ Now safely parse JSON
+// 5. Parse JSON
 const data = await response.json();
-
-const agentResponse: AgentResponse = {
-  message: data.message,
-  designResultUrl: data.design_result_url,
-};
