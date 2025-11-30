@@ -1,4 +1,2 @@
-fastapi
-uvicorn[standard]
-pydantic
-python-multipart  # Needed for File uploads (STT)
+google-genai # or openai
+python-dotenv # for secure environment variable loading
