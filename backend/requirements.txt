@@ -1,0 +1,6 @@
+fastapi==0.111.0             # FastAPI framework
+uvicorn[standard]==0.23.2    # ASGI server for running FastAPI
+python-dotenv==1.0.0         # For environment variable loading
+google-genai==0.13.0         # Gemini LLM client
+httpx==1.8.3                 # Async HTTP requests (if needed)
+
