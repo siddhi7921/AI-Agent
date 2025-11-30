@@ -1,54 +1,68 @@
-# backend/services/ai_core.py
+# backend/services/ai_core.py (Updated for Gemini)
 
 import time
+import os
 from typing import Tuple, Optional
+from dotenv import load_dotenv
+from google import genai
+from google.genai.types import GenerationConfig
 
-# --- Design Tool Implementation ---
+# Load environment variables from .env file
+load_dotenv() 
+
+# Initialize the Gemini Client
+try:
+    client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+except Exception as e:
+    print(f"Error initializing Gemini client: {e}")
+    client = None # Handle failure gracefully
+
+# --- Tool Logic (Remains similar for now) ---
+
 async def handle_design_tool(prompt: str) -> Tuple[str, Optional[str]]:
-    """
-    Simulates calling an external DALL-E/Imagen service or an internal design engine.
-    
-    Args:
-        prompt: The user's input describing the desired design.
-        
-    Returns:
-        A tuple containing (response_message, design_result_url).
-    """
+    """Simulates calling a design service based on the prompt."""
     print(f"Design Tool: Generating asset for prompt: '{prompt}'")
-    
-    # Simulate a slow external API call (e.g., image generation takes time)
     await time.sleep(3) 
 
-    # 1. LLM Interpretation: The LLM component would first extract key parameters 
-    #    (e.g., size, colors, theme) from the raw prompt.
-    design_topic = prompt.split("design a")[1].strip() if "design a" in prompt.lower() else "a social media post"
-    
-    # 2. Asset Generation: Call DALL-E or a custom design API.
-    #    design_url = generate_image(design_topic)
-    
-    # Placeholder Logic:
+    # In a real app, the LLM would interpret the prompt and then generate the image.
+    design_topic = prompt.split("design a")[1].strip() if "design a" in prompt.lower() else "a creative graphic"
     design_url = f"https://image-api.com/v1/design/{hash(prompt)}" 
     
     response_message = (
         f"Design complete! I've created the graphic for '{design_topic}'. "
         f"You can view the full-resolution asset now."
     )
-    
     return response_message, design_url
 
-# --- General LLM/RAG Implementation ---
-async def handle_llm_query(user_input: str, session_id: str) -> str:
-    """
-    Simulates calling the main LLM (e.g., Gemini, GPT) potentially with RAG.
-    """
-    print(f"LLM/RAG: Handling general chat for session {session_id}")
-    await time.sleep(1) # Simulate quick LLM response
 
-    # 1. RAG Check: Look up relevant documents based on user_input.
-    #    context = rag_lookup(user_input)
+# --- General LLM/RAG Implementation (Now uses an actual LLM) ---
+
+async def handle_llm_query(user_input: str, session_id: str) -> str:
+    """Handles general chat using the Gemini LLM."""
+    if not client:
+        return "I'm sorry, the AI service is currently unavailable. Please check the API key."
     
-    # 2. LLM Call: Pass context and user_input to the LLM.
-    #    llm_response = call_llm(user_input, context)
+    # 1. RAG Lookup (Placeholder): If you had RAG, you'd insert context here
+    # context = rag_lookup(user_input, session_id) 
+    # full_prompt = f"Use the following context: {context}\n\nUser Question: {user_input}"
     
-    # Placeholder Logic:
-    return f"I am a helpful assistant. You mentioned '{user_input}'. If you have a specific design task, just ask me to design something!"
+    system_instruction = (
+        "You are the Canva AI Agent, a helpful, friendly, and brief assistant. "
+        "Your primary goal is to help users with design and productivity tasks. "
+        "If the user asks for a design, be ready to hand the task over to the 'design tool'."
+    )
+
+    try:
+        response = client.models.generate_content(
+            model='gemini-2.5-flash', # A fast model suitable for chat
+            contents=[user_input],
+            config=GenerationConfig(
+                system_instruction=system_instruction,
+                temperature=0.7
+            )
+        )
+        return response.text
+        
+    except Exception as e:
+        print(f"Gemini API call failed: {e}")
+        return "I seem to be having trouble connecting to my central processing unit right now."
